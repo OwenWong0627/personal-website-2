@@ -1,44 +1,19 @@
-// components/Navbar.tsx
-import Link from "next/link";
-import React from "react";
-import { Player } from "@lottiefiles/react-lottie-player";
+import AnimatedLink from "./NavbarLink";
+import { ActiveLinkProvider } from "../contexts/ActiveLinkContext";
 
 const Navbar = () => {
     return (
-        <nav className="bg-white shadow-md w-full">
-            <div className="flex justify-between items-center py-6 md:justify-start md:space-x-10">
-                <Link
-                    href="/about-me"
-                    className="text-gray-800 hover:text-orange-500 transition duration-300"
-                >
-                    About Me
-                </Link>
-                <Link
-                    href="/education"
-                    className="text-gray-800 hover:text-orange-500 transition duration-300"
-                >
-                    Education
-                </Link>
-                <Link
-                    href="/projects"
-                    className="text-gray-800 hover:text-orange-500 transition duration-300"
-                >
-                    Projects
-                </Link>
-                <Link
-                    href="/resume"
-                    className="text-gray-800 hover:text-orange-500 transition duration-300"
-                >
-                    Resume
-                </Link>
-                <Link
-                    href="/contact-me"
-                    className="text-gray-800 hover:text-orange-500 transition duration-300"
-                >
-                    Contact Me
-                </Link>
+        <ActiveLinkProvider>
+            <div className="bg-gradient-to-r from-pastel-pink to-pastel-blue py-6">
+                <nav className="flex justify-around text-base-plus font-semi-bold tracking-tightest font-switzer">
+                    <AnimatedLink href="/about-me">About Me</AnimatedLink>
+                    <AnimatedLink href="/education">Education</AnimatedLink>
+                    <AnimatedLink href="/projects">Projects</AnimatedLink>
+                    <AnimatedLink href="/resume">Resume</AnimatedLink>
+                    <AnimatedLink href="/contact-me">Contact Me</AnimatedLink>
+                </nav>
             </div>
-        </nav>
+        </ActiveLinkProvider>
     );
 };
 
