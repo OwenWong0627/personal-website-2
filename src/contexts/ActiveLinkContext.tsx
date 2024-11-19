@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useState } from "react";
 
-const ActiveLinkContext = createContext({
+export const ActiveLinkContext = createContext({
     activeHref: "",
     setActiveHref: (href: string) => {},
+    resetActiveHref: () => {}, // Add a reset function
 });
 
 export const useActiveLink = () => useContext(ActiveLinkContext);
@@ -16,8 +17,12 @@ export const ActiveLinkProvider: React.FC<ActiveLinkProviderProps> = ({
 }) => {
     const [activeHref, setActiveHref] = useState("");
 
+    const resetActiveHref = () => setActiveHref("");
+
     return (
-        <ActiveLinkContext.Provider value={{ activeHref, setActiveHref }}>
+        <ActiveLinkContext.Provider
+            value={{ activeHref, setActiveHref, resetActiveHref }}
+        >
             {children}
         </ActiveLinkContext.Provider>
     );
