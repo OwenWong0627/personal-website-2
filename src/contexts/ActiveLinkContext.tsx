@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState } from "react";
 export const ActiveLinkContext = createContext({
     activeHref: "",
     setActiveHref: (href: string) => {},
-    resetActiveHref: () => {}, // Add a reset function
+    resetActiveHref: () => {},
 });
 
 export const useActiveLink = () => useContext(ActiveLinkContext);
