@@ -128,6 +128,8 @@ const AnimatedLink: React.FC<AnimatedLinkProps> = ({ href, children }) => {
                     height: 100,
                     width: "100%",
                     top: -29,
+                    // TODO: Make routing move the camera to the active link
+                    // uncomment to enable actual routing
                     // pointerEvents: href === activeHref ? "auto" : "none",
                     cursor: href === activeHref ? "default" : "pointer",
                 }}

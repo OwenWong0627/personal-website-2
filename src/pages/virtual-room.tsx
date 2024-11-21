@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import RenderModel from "@/components/RenderModel";
+import VolumeControl from "@/components/VolumeControl";
 import dynamic from "next/dynamic";
 import React from "react";
 
@@ -11,6 +12,7 @@ export default function VirtualRoom() {
     return (
         <main className="flex min-h-screen flex-col">
             <Navbar />
+            <VolumeControl />
             <div className="w-screen h-screen">
                 <RenderModel>
                     <Box position={[-1.2, 0, 0]} />
