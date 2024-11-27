@@ -1,39 +1,92 @@
-import { pre } from "framer-motion/client";
 import React, { useState, useEffect, useRef } from "react";
 
-const VolumeControl: React.FC = () => {
-    const [isMuted, setIsMuted] = useState<true | false | null>(null);
+interface VolumeControlProps {
+    isVirtualRoomEntered: boolean;
+}
+
+const VolumeControl: React.FC<VolumeControlProps> = ({
+    isVirtualRoomEntered,
+}) => {
+    const [isMuted, setIsMuted] = useState<boolean>(true);
     const audioRef = useRef<HTMLAudioElement | null>(null);
+    const fadeIntervalRef = useRef<NodeJS.Timeout | null>(null);
+    const targetVolume = 0.2;
+    const fadeDuration = 3000;
+    const fadeSteps = 30;
 
     useEffect(() => {
-        const audio = new Audio("/audio/lofi-music-1.mp3"); // Ensure the path is correct relative to your 'public' directory
+        const audio = new Audio("/audio/lofi-music-1.mp3");
         audio.loop = true;
-        audio.volume = isMuted ? 0 : 1;
+        audio.volume = 0; // Start with muted volume
         audioRef.current = audio;
+
+        if (isVirtualRoomEntered) {
+            setIsMuted(false);
+            audio
+                .play()
+                .catch((error) => console.error("Error playing audio:", error));
+            graduallyIncreaseVolume(
+                audio,
+                targetVolume,
+                fadeDuration,
+                fadeSteps
+            );
+        }
+
         return () => {
             audio.pause();
+            if (fadeIntervalRef.current) {
+                clearInterval(fadeIntervalRef.current); // Clear any ongoing intervals
+            }
         };
-    }, []);
+    }, [isVirtualRoomEntered]);
 
-    const playAudio = async () => {
-        try {
-            await audioRef.current?.play();
-        } catch (error) {
-            console.error("Error playing audio:", error);
+    const graduallyIncreaseVolume = (
+        audio: HTMLAudioElement,
+        targetVolume: number,
+        duration: number,
+        steps: number
+    ) => {
+        const stepDuration = duration / steps;
+        const volumeIncrement = targetVolume / steps;
+        let currentStep = 0;
+
+        if (fadeIntervalRef.current) {
+            clearInterval(fadeIntervalRef.current);
         }
+
+        fadeIntervalRef.current = setInterval(() => {
+            if (audio.volume < targetVolume && currentStep < steps) {
+                audio.volume += volumeIncrement;
+                currentStep++;
+            } else {
+                clearInterval(fadeIntervalRef.current!);
+                fadeIntervalRef.current = null;
+            }
+        }, stepDuration);
     };
 
     const toggleMute = () => {
-        setIsMuted((prevMute) => {
-            if (prevMute === null) {
-                playAudio();
-            }
-            const newMuteState = prevMute === null ? false : !prevMute;
-            if (audioRef.current) {
-                audioRef.current.volume = newMuteState ? 0 : 0.6;
-            }
-            return newMuteState;
-        });
+        if (audioRef.current) {
+            setIsMuted((prevMute) => {
+                if (!prevMute) {
+                    // If unmuting, stop any ongoing fade-in and mute immediately
+                    if (fadeIntervalRef.current) {
+                        clearInterval(fadeIntervalRef.current);
+                        fadeIntervalRef.current = null;
+                    }
+                    audioRef.current!.volume = 0;
+                } else {
+                    graduallyIncreaseVolume(
+                        audioRef.current!,
+                        targetVolume,
+                        fadeDuration,
+                        fadeSteps
+                    );
+                }
+                return !prevMute;
+            });
+        }
     };
 
     const volumeOnSvg = {
@@ -48,11 +101,7 @@ const VolumeControl: React.FC = () => {
         <div
             onClick={toggleMute}
             className="w-14 h-14 rounded-full flex items-center justify-center bg-gradient-to-r from-pink-300 to-blue-200 cursor-pointer shadow-md absolute bottom-5 right-5 z-10 p-2 pt-4"
-            dangerouslySetInnerHTML={
-                isMuted === null || isMuted === true
-                    ? volumeOffSvg
-                    : volumeOnSvg
-            } // Conditionally rendering the appropriate SVG
+            dangerouslySetInnerHTML={isMuted ? volumeOffSvg : volumeOnSvg}
         />
     );
 };

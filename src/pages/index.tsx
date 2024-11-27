@@ -1,34 +1,28 @@
-import Image from "next/image";
-import Link from "next/link";
+// pages/index.tsx
+import React, { useState } from "react";
+import Welcome from "@/components/Welcome";
+import VirtualRoom from "@/components/VirtualRoom";
+import VolumeControl from "@/components/VolumeControl";
 
-export default function Home() {
+const Home: React.FC = () => {
+    const [showVirtualRoom, setShowVirtualRoom] = useState<boolean>(false);
+
+    const handleEnterVirtualRoom = (): void => {
+        setShowVirtualRoom(true);
+    };
+
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50 dark:bg-gray-900">
-            <Image
-                src="/next.svg"
-                alt="Next.js logo"
-                width={180}
-                height={38}
-                priority
-            />
-
-            <h1 className="mt-8 text-4xl font-bold text-center text-gray-800 dark:text-white">
-                Welcome to My Virtual Office
-            </h1>
-
-            <p className="mt-4 text-lg text-center text-gray-600 dark:text-gray-300">
-                Discover the 3D experience of our virtual office.
-            </p>
-
-            {/* Link to the virtual room page */}
-            <Link
-                href="/virtual-room"
-                className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition duration-300"
-            >
-                Enter Virtual Room
-            </Link>
-
-            {/* TODO?: Add more content or links here */}
+        <div className="flex flex-col min-h-screen">
+            {!showVirtualRoom ? (
+                <Welcome onEnterVirtualRoom={handleEnterVirtualRoom} />
+            ) : (
+                <>
+                    <VirtualRoom />
+                    <VolumeControl isVirtualRoomEntered={showVirtualRoom} />
+                </>
+            )}
         </div>
     );
-}
+};
+
+export default Home;
