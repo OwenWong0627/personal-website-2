@@ -1,26 +1,24 @@
-// pages/index.tsx
 import React, { useState } from "react";
 import Welcome from "@/components/Welcome";
 import VirtualRoom from "@/components/VirtualRoom";
-import VolumeControl from "@/components/VolumeControl";
 
 const Home: React.FC = () => {
-    const [showVirtualRoom, setShowVirtualRoom] = useState<boolean>(false);
+    const [showWelcome, setShowWelcome] = useState(true);
+    const [showVirtualRoom, setShowVirtualRoom] = useState(false);
 
-    const handleEnterVirtualRoom = (): void => {
-        setShowVirtualRoom(true);
+    const handleEnterVirtualRoom = () => {
+        setShowWelcome(false);
+        setTimeout(() => {
+            setShowVirtualRoom(true);
+        }, 500);
     };
 
     return (
-        <div className="flex flex-col min-h-screen">
-            {!showVirtualRoom ? (
+        <div className="relative min-h-screen">
+            {showWelcome && (
                 <Welcome onEnterVirtualRoom={handleEnterVirtualRoom} />
-            ) : (
-                <>
-                    <VirtualRoom />
-                    <VolumeControl isVirtualRoomEntered={showVirtualRoom} />
-                </>
             )}
+            {!showWelcome && <VirtualRoom isEntered={showVirtualRoom} />}
         </div>
     );
 };

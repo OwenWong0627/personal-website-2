@@ -16,6 +16,7 @@ export default {
             },
             fontFamily: {
                 switzer: ["Switzer", "sans-serif"],
+                "custom-mono": ["Courier New", "Courier", "monospace"],
             },
             fontWeight: {
                 "semi-bold": "600",
@@ -28,6 +29,38 @@ export default {
             },
             backgroundImage: {
                 "gradient-to-r": "linear-gradient(to right, #fcbad3, #a7c7e7)",
+            },
+            keyframes: {
+                typing: {
+                    "0%": {
+                        width: "0%",
+                        visibility: "hidden",
+                    },
+                    "100%": {
+                        width: "760px",
+                    },
+                },
+                blink: {
+                    "0%, 100%": {
+                        borderColor: "white",
+                    },
+                    "50%": {
+                        borderColor: "transparent",
+                    },
+                },
+                "border-and-padding": {
+                    "0%, 99%": {
+                        borderRightWidth: "4px",
+                        paddingRight: "1.25rem",
+                    },
+                    "100%": {
+                        borderRightWidth: "0px",
+                        paddingRight: "0",
+                    },
+                },
+            },
+            animation: {
+                typing: "typing 3s steps(30), blink .5s steps(1) 15, border-and-padding 3s steps(1) forwards",
             },
         },
     },
