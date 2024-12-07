@@ -9,9 +9,18 @@ interface AnimatedLinkProps {
     children: React.ReactNode;
 }
 
+type LottieWithAnim = Lottie & {
+    anim: {
+        currentFrame: number;
+        setSpeed: (speed: number) => void;
+        addEventListener: (event: string, callback: () => void) => void;
+        removeEventListener: (event: string, callback: () => void) => void;
+    };
+};
+
 const AnimatedLink: React.FC<AnimatedLinkProps> = ({ href, children }) => {
     const { activeHref, setActiveHref } = useActiveLink();
-    const animRef = useRef<any>(null);
+    const animRef = useRef<LottieWithAnim>(null);
 
     useEffect(() => {
         const anim = animRef.current?.anim;

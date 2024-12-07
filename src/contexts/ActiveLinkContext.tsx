@@ -1,12 +1,26 @@
 import React, { createContext, useContext, useState } from "react";
 
-export const ActiveLinkContext = createContext({
+interface ActiveLinkContextType {
+    activeHref: string;
+    setActiveHref: (href: string) => void;
+    resetActiveHref: () => void;
+}
+
+export const ActiveLinkContext = createContext<ActiveLinkContextType>({
     activeHref: "",
-    setActiveHref: (href: string) => {},
+    setActiveHref: () => {},
     resetActiveHref: () => {},
 });
 
-export const useActiveLink = () => useContext(ActiveLinkContext);
+export const useActiveLink = () => {
+    const context = useContext(ActiveLinkContext);
+    if (!context) {
+        throw new Error(
+            "useActiveLink must be used within an ActiveLinkProvider"
+        );
+    }
+    return context;
+};
 
 interface ActiveLinkProviderProps {
     children: React.ReactNode;
@@ -15,7 +29,7 @@ interface ActiveLinkProviderProps {
 export const ActiveLinkProvider: React.FC<ActiveLinkProviderProps> = ({
     children,
 }) => {
-    const [activeHref, setActiveHref] = useState("");
+    const [activeHref, setActiveHref] = useState<string>("");
 
     const resetActiveHref = () => setActiveHref("");
 
