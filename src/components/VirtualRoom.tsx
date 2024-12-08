@@ -17,7 +17,8 @@ interface VirtualRoomProps {
 
 const VirtualRoom: React.FC<VirtualRoomProps> = ({ isEntered }) => {
     const [opacity, setOpacity] = useState(0);
-    const [isDarkMode, setIsDarkMode] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(true);
+    const [isTransitioning, setIsTransitioning] = useState(false);
 
     useEffect(() => {
         if (isEntered) {
@@ -25,17 +26,41 @@ const VirtualRoom: React.FC<VirtualRoomProps> = ({ isEntered }) => {
         }
     }, [isEntered]);
 
+    const handleBackgroundChange = () => {
+        setIsTransitioning(true);
+
+        setIsDarkMode(!isDarkMode);
+        setIsTransitioning(false);
+    };
+
     return (
         <div
             className={`transition-opacity duration-500 ease-in-out opacity-${opacity}`}
         >
             <main className="flex min-h-screen flex-col">
-                {isDarkMode ? <StarryBackground /> : <SkyBackground />}
+                <div className="relative w-full h-full">
+                    <div
+                        className={`absolute inset-0 transition-opacity duration-light-dark ease-in-out ${
+                            isDarkMode ? "opacity-100" : "opacity-0"
+                        }`}
+                    >
+                        <StarryBackground />
+                    </div>
+                    <div
+                        className={`absolute inset-0 transition-opacity duration-light-dark ease-in-out ${
+                            isDarkMode ? "opacity-0" : "opacity-100"
+                        }`}
+                    >
+                        <SkyBackground />
+                    </div>
+                </div>
                 <Navbar />
                 <button
-                    onClick={() => setIsDarkMode(!isDarkMode)}
-                    className="fixed top-20 left-4 z-10 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg 
-                    text-white border border-white/20 hover:bg-white/20 transition-colors duration-200"
+                    onClick={handleBackgroundChange}
+                    disabled={isTransitioning}
+                    className={`fixed top-20 left-4 z-10 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg 
+                    text-white border border-white/20 hover:bg-white/20 transition-colors duration-200
+                    ${isTransitioning ? "cursor-not-allowed opacity-50" : ""}`}
                 >
                     {isDarkMode ? "Sky Background" : "Starry Background"}
                 </button>

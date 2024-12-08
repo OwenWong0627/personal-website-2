@@ -91,6 +91,9 @@ export default {
                 "cloud-2": "float-cloud 25s linear infinite",
                 "cloud-3": "float-cloud 35s linear infinite",
             },
+            transitionDuration: {
+                "light-dark": "2000ms",
+            },
         },
     },
     plugins: [],
