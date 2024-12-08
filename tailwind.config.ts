@@ -58,9 +58,25 @@ export default {
                         paddingRight: "0",
                     },
                 },
+                twinkle: {
+                    "0%": { opacity: "0.2" },
+                    "100%": { opacity: "1" },
+                },
+                "shooting-star": {
+                    "0%": {
+                        transform: "scale(1) translate(0, 0)",
+                        opacity: "1",
+                    },
+                    "100%": {
+                        transform: "scale(1.5) translate(100vh, 100vh)",
+                        opacity: "0",
+                    },
+                },
             },
             animation: {
                 typing: "typing 3s steps(30), blink .5s steps(1) 15, border-and-padding 3s steps(1) forwards",
+                twinkle: "twinkle 2s infinite alternate",
+                "shooting-star": "shooting-star 6s linear forwards",
             },
         },
     },

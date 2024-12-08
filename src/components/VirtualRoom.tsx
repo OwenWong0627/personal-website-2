@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import RenderModel from "@/components/RenderModel";
 import VolumeControl from "@/components/VolumeControl";
+import StarryBackground from "@/components/StarryBackground";
+
 import dynamic from "next/dynamic";
 
 const Box = dynamic(() => import("@/components/models/Box"), {
@@ -25,6 +27,7 @@ const VirtualRoom: React.FC<VirtualRoomProps> = ({ isEntered }) => {
         <div
             className={`transition-opacity duration-500 ease-in-out opacity-${opacity}`}
         >
+            <StarryBackground />
             <main className="flex min-h-screen flex-col">
                 <Navbar />
                 <VolumeControl isVirtualRoomEntered={isEntered} />
