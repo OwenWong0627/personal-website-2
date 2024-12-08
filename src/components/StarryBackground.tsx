@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from "react";
 const StarryBackground: React.FC = () => {
     const starFieldRef = useRef<HTMLDivElement>(null);
     const shootingStarsRef = useRef<HTMLDivElement>(null);
+    const intervalRef = useRef<NodeJS.Timeout>();
 
     useEffect(() => {
         const createStars = () => {
@@ -32,55 +33,75 @@ const StarryBackground: React.FC = () => {
             }
         };
 
-        const createShootingStars = () => {
+        const createShootingStar = () => {
             const shootingStarsContainer = shootingStarsRef.current;
             if (!shootingStarsContainer) return;
 
-            const createShootingStar = () => {
-                const star = document.createElement("div");
-                star.classList.add(
-                    "absolute",
-                    "bg-white",
-                    "rounded-full",
-                    "animate-shooting-star"
-                );
+            const star = document.createElement("div");
+            star.classList.add(
+                "absolute",
+                "bg-white",
+                "rounded-full",
+                "animate-shooting-star"
+            );
 
-                const startTop = Math.random() * 30;
-                const startLeft = Math.random() * 60;
+            const startTop = Math.random() * 30;
+            const startLeft = Math.random() * 60;
 
-                if (Math.random() < 0.5) {
-                    star.style.top = `${startTop}%`;
-                    star.style.left = "0";
-                } else {
-                    star.style.top = "0";
-                    star.style.left = `${startLeft}%`;
-                }
+            if (Math.random() < 0.5) {
+                star.style.top = `${startTop}%`;
+                star.style.left = "0";
+            } else {
+                star.style.top = "0";
+                star.style.left = `${startLeft}%`;
+            }
 
-                const size = Math.random() * 3 + 5;
-                star.style.width = `${size}px`;
-                star.style.height = `${size}px`;
+            const size = Math.random() * 3 + 5;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
 
-                const duration = Math.random() * 2 + 2;
-                star.style.animationDuration = `${duration}s`;
+            const duration = Math.random() * 2 + 2;
+            star.style.animationDuration = `${duration}s`;
 
-                const delay = Math.random() * 5;
-                star.style.animationDelay = `-${delay}s`;
+            const delay = Math.random() * 5;
+            star.style.animationDelay = `-${delay}s`;
 
-                shootingStarsContainer.appendChild(star);
-            };
+            shootingStarsContainer.appendChild(star);
+        };
 
-            // Create multiple shooting stars
+        const startShootingStars = () => {
             const shootingStarCount = Math.floor(Math.random() * 3) + 1;
             for (let i = 0; i < shootingStarCount; i++) {
                 createShootingStar();
             }
-
-            // Set interval to generate new shooting stars periodically
-            setInterval(createShootingStar, Math.random() * 4000 + 3000);
+            intervalRef.current = setInterval(() => {
+                createShootingStar();
+            }, Math.random() * 1000 + 2000);
         };
 
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                if (intervalRef.current) {
+                    clearInterval(intervalRef.current);
+                }
+            } else {
+                startShootingStars();
+            }
+        };
+
+        document.addEventListener("visibilitychange", handleVisibilityChange);
         createStars();
-        createShootingStars();
+        startShootingStars();
+
+        return () => {
+            document.removeEventListener(
+                "visibilitychange",
+                handleVisibilityChange
+            );
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
     }, []);
 
     return (

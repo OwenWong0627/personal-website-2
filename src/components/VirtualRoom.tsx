@@ -19,7 +19,7 @@ const VirtualRoom: React.FC<VirtualRoomProps> = ({ isEntered }) => {
 
     useEffect(() => {
         if (isEntered) {
-            setTimeout(() => setOpacity(100), 50); // Small delay to ensure the transition happens
+            setTimeout(() => setOpacity(100), 50);
         }
     }, [isEntered]);
 
