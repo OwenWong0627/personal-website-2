@@ -76,7 +76,7 @@ const StarryBackground: React.FC = () => {
             }
             intervalRef.current = setInterval(() => {
                 createShootingStar();
-            }, Math.random() * 1000 + 2000);
+            }, Math.random() * 4000 + 3000);
         };
 
         const handleVisibilityChange = () => {

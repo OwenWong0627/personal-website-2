@@ -6,6 +6,7 @@ import StarryBackground from "@/components/StarryBackground";
 import SkyBackground from "@/components/SkyBackground";
 
 import dynamic from "next/dynamic";
+import BackgroundToggle from "@/components/BackgroundToggle";
 
 const Box = dynamic(() => import("@/components/models/Box"), {
     ssr: false,
@@ -18,7 +19,6 @@ interface VirtualRoomProps {
 const VirtualRoom: React.FC<VirtualRoomProps> = ({ isEntered }) => {
     const [opacity, setOpacity] = useState(0);
     const [isDarkMode, setIsDarkMode] = useState(true);
-    const [isTransitioning, setIsTransitioning] = useState(false);
 
     useEffect(() => {
         if (isEntered) {
@@ -27,10 +27,7 @@ const VirtualRoom: React.FC<VirtualRoomProps> = ({ isEntered }) => {
     }, [isEntered]);
 
     const handleBackgroundChange = () => {
-        setIsTransitioning(true);
-
         setIsDarkMode(!isDarkMode);
-        setIsTransitioning(false);
     };
 
     return (
@@ -55,15 +52,10 @@ const VirtualRoom: React.FC<VirtualRoomProps> = ({ isEntered }) => {
                     </div>
                 </div>
                 <Navbar />
-                <button
-                    onClick={handleBackgroundChange}
-                    disabled={isTransitioning}
-                    className={`fixed top-20 left-4 z-10 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg 
-                    text-white border border-white/20 hover:bg-white/20 transition-colors duration-200
-                    ${isTransitioning ? "cursor-not-allowed opacity-50" : ""}`}
-                >
-                    {isDarkMode ? "Sky Background" : "Starry Background"}
-                </button>
+                <BackgroundToggle
+                    isDarkMode={isDarkMode}
+                    onToggle={handleBackgroundChange}
+                />
                 <VolumeControl isVirtualRoomEntered={isEntered} />
                 <div className="w-screen h-screen">
                     <RenderModel>
