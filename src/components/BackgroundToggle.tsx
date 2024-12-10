@@ -5,6 +5,10 @@ const SunModel = dynamic(() => import("@/components/models/SunModel"), {
     ssr: false,
 });
 
+const MoonModel = dynamic(() => import("@/components/models/MoonModel"), {
+    ssr: false,
+});
+
 interface BackgroundToggleProps {
     isDarkMode: boolean;
     onToggle: () => void;
@@ -16,7 +20,7 @@ const BackgroundToggle: React.FC<BackgroundToggleProps> = ({
 }) => {
     return (
         <div
-            className="fixed top-24 left-0 w-60 h-60 z-10 cursor-pointer"
+            className="fixed top-24 left-0 w-60 h-60 z-10 bg-transparent cursor-pointer"
             onClick={onToggle}
         >
             <Canvas
@@ -37,7 +41,7 @@ const BackgroundToggle: React.FC<BackgroundToggleProps> = ({
                     intensity={Math.PI / 3}
                 />
                 <pointLight position={[10, 10, 10]} />
-                {isDarkMode ? <SunModel /> : <SunModel />}
+                {isDarkMode ? <MoonModel /> : <SunModel />}
             </Canvas>
         </div>
     );
