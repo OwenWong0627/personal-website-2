@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Link from "next/link";
-import Lottie from "react-lottie";
+import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import animationData from "../../public/lottie/LottieSharpieCirclePurple.json";
 import { useActiveLink } from "../contexts/ActiveLinkContext";
 
@@ -9,99 +9,61 @@ interface AnimatedLinkProps {
     children: React.ReactNode;
 }
 
-type LottieWithAnim = Lottie & {
-    anim: {
-        currentFrame: number;
-        setSpeed: (speed: number) => void;
-        addEventListener: (event: string, callback: () => void) => void;
-        removeEventListener: (event: string, callback: () => void) => void;
-    };
-};
-
 const AnimatedLink: React.FC<AnimatedLinkProps> = ({ href, children }) => {
     const { activeHref, setActiveHref } = useActiveLink();
-    const animRef = useRef<LottieWithAnim>(null);
+    const lottieRef = useRef<LottieRefCurrentProps>(null);
 
-    useEffect(() => {
-        const anim = animRef.current?.anim;
-        if (anim) {
-            const handleEnterFrame = () => {
-                const currentFrame = anim.currentFrame;
-                let speed = 1;
+    const handleEnterFrame = () => {
+        const currentFrame =
+            lottieRef.current?.animationItem?.currentFrame || 0;
+        let speed = 1;
 
-                if (currentFrame >= 0 && currentFrame <= 15) {
-                    speed = 4;
-                } else if (currentFrame > 15 && currentFrame <= 22) {
-                    speed = 2;
-                } else if (currentFrame > 22 && currentFrame <= 29) {
-                    speed = 0.75;
-                }
-
-                anim.setSpeed(speed);
-                // console.log("Current Frame:", currentFrame, "Speed:", speed);
-            };
-
-            anim.addEventListener("enterFrame", handleEnterFrame);
-
-            return () => {
-                anim.removeEventListener("enterFrame", handleEnterFrame);
-            };
+        if (currentFrame >= 0 && currentFrame <= 15) {
+            speed = 4;
+        } else if (currentFrame > 15 && currentFrame <= 22) {
+            speed = 2;
+        } else if (currentFrame > 22 && currentFrame <= 29) {
+            speed = 0.75;
         }
-    }, []);
 
-    const [animationState, setAnimationState] = useState({
-        isStopped: true,
-        isPaused: false,
-        direction: 1,
-        isHovered: false,
-    });
-
-    const defaultOptions = {
-        loop: false,
-        autoplay: false,
-        animationData: animationData,
-        rendererSettings: {
-            preserveAspectRatio: "xMidYMid meet",
-        },
+        lottieRef.current?.setSpeed(speed);
     };
+    useEffect(() => {
+        const lottieInstance = lottieRef.current;
+        if (lottieInstance) {
+            lottieInstance.setSpeed(1);
+        }
+
+        return () => {
+            if (lottieInstance) {
+                lottieInstance.destroy();
+            }
+        };
+    }, []);
 
     useEffect(() => {
         if (href === activeHref) {
             setTimeout(() => {
-                setAnimationState((prevState) => ({
-                    ...prevState,
-                    isStopped: false,
-                    isPaused: true,
-                }));
+                lottieRef.current?.play();
+                lottieRef.current?.pause();
             }, 200);
         } else {
-            setAnimationState((prevState) => ({
-                ...prevState,
-                isStopped: false,
-                isPaused: false,
-                direction: -1,
-            }));
+            lottieRef.current?.setDirection(-1);
+            lottieRef.current?.play();
         }
     }, [activeHref, href]);
 
     const handleMouseEnter = () => {
         if (href !== activeHref) {
-            setAnimationState((prevState) => ({
-                ...prevState,
-                isStopped: false,
-                isPaused: false,
-                direction: 1,
-            }));
+            lottieRef.current?.setDirection(1);
+            lottieRef.current?.play();
         }
     };
 
     const handleMouseLeave = () => {
         if (href !== activeHref) {
-            setAnimationState((prevState) => ({
-                ...prevState,
-                isPaused: false,
-                direction: -1,
-            }));
+            lottieRef.current?.setDirection(-1);
+            lottieRef.current?.play();
         }
     };
 
@@ -125,13 +87,11 @@ const AnimatedLink: React.FC<AnimatedLinkProps> = ({ href, children }) => {
                 {children}
             </Link>
             <Lottie
-                ref={animRef}
-                options={defaultOptions}
-                height={100}
-                width="100%"
-                isStopped={animationState.isStopped}
-                isPaused={animationState.isPaused}
-                direction={animationState.direction}
+                lottieRef={lottieRef}
+                animationData={animationData}
+                loop={false}
+                autoplay={false}
+                onEnterFrame={handleEnterFrame}
                 style={{
                     position: "absolute",
                     height: 100,
