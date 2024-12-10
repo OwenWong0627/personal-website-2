@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import Link from "next/link";
-import Lottie, { LottieRefCurrentProps } from "lottie-react";
+import { LottieRefCurrentProps } from "lottie-react";
+import DynamicLottie from "@/components/DynamicLottie";
 import animationData from "../../public/lottie/LottieSharpieCirclePurple.json";
 import { useActiveLink } from "../contexts/ActiveLinkContext";
 
@@ -86,7 +87,7 @@ const AnimatedLink: React.FC<AnimatedLinkProps> = ({ href, children }) => {
             >
                 {children}
             </Link>
-            <Lottie
+            <DynamicLottie
                 lottieRef={lottieRef}
                 animationData={animationData}
                 loop={false}
