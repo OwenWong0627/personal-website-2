@@ -72,27 +72,15 @@ export default {
                         opacity: "0",
                     },
                 },
-                sky: {
-                    "0%": { opacity: "0.8" },
-                    "50%": { opacity: "1" },
-                    "100%": { opacity: "0.8" },
-                },
-                "float-cloud": {
-                    "0%": { transform: "translateX(-100%)" },
-                    "100%": { transform: "translateX(100vw)" },
-                },
             },
             animation: {
                 typing: "typing 3s steps(30), blink .5s steps(1) 15, border-and-padding 3s steps(1) forwards",
                 twinkle: "twinkle 2s infinite alternate",
                 "shooting-star": "shooting-star 6s linear forwards",
-                sky: "sky 4s ease-in-out infinite",
-                "cloud-1": "float-cloud 30s linear infinite",
-                "cloud-2": "float-cloud 25s linear infinite",
-                "cloud-3": "float-cloud 35s linear infinite",
             },
             transitionDuration: {
                 "light-dark": "2000ms",
+                "light-dark-fast": "1250ms",
             },
         },
     },

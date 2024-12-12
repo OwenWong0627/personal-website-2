@@ -22,7 +22,7 @@ const VirtualRoom: React.FC<VirtualRoomProps> = ({ isEntered }) => {
 
     useEffect(() => {
         if (isEntered) {
-            setTimeout(() => setOpacity(100), 50);
+            setTimeout(() => setOpacity(100), 50); // Delay the fade-in effect
         }
     }, [isEntered]);
 
