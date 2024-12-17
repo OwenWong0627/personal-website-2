@@ -99,6 +99,7 @@ const SkyBackground: React.FC = () => {
         const renderer = new THREE.WebGLRenderer({
             antialias: false,
             alpha: true,
+            powerPreference: "low-power",
         });
         renderer.setClearColor(0x000000, 0);
 

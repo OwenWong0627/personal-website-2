@@ -8,6 +8,10 @@ export default {
     ],
     theme: {
         extend: {
+            spacing: {
+                "monitor-width": "2560px",
+                "monitor-height": "1440px",
+            },
             letterSpacing: {
                 tightest: "-.03em",
             },

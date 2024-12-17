@@ -8,7 +8,11 @@ import SkyBackground from "@/components/SkyBackground";
 import dynamic from "next/dynamic";
 import BackgroundToggle from "@/components/BackgroundToggle";
 
-const Box = dynamic(() => import("@/components/models/Box"), {
+const Room = dynamic(() => import("@/components/models/Room"), {
+    ssr: false,
+});
+
+const Monitor = dynamic(() => import("@/components/models/Monitor"), {
     ssr: false,
 });
 
@@ -59,8 +63,8 @@ const VirtualRoom: React.FC<VirtualRoomProps> = ({ isEntered }) => {
                 <VolumeControl isVirtualRoomEntered={isEntered} />
                 <div className="w-screen h-screen">
                     <RenderModel>
-                        <Box position={[-1.2, 0, 0]} />
-                        <Box position={[1.2, 0, 0]} />
+                        <Room />
+                        <Monitor />
                     </RenderModel>
                 </div>
             </main>
