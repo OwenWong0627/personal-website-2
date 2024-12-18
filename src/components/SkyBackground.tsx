@@ -31,6 +31,8 @@ const SkyBackground: React.FC = () => {
         );
         texture.magFilter = THREE.LinearFilter;
         texture.minFilter = THREE.LinearMipmapLinearFilter;
+        texture.format = THREE.RGBAFormat;
+        texture.generateMipmaps = true;
 
         const material = new THREE.ShaderMaterial({
             uniforms: {
@@ -74,7 +76,7 @@ const SkyBackground: React.FC = () => {
 
         const planeGeometry = new THREE.PlaneGeometry(64, 64);
 
-        for (let i = 0; i < 8000; i++) {
+        for (let i = 0; i < 4000; i++) {
             const plane = planeGeometry.clone();
             plane.translate(
                 Math.random() * 2000 - 1000,
@@ -93,7 +95,7 @@ const SkyBackground: React.FC = () => {
         scene.add(mesh);
 
         mesh = new THREE.Mesh(geometry, material);
-        mesh.position.z = -8000;
+        mesh.position.z = -4000;
         scene.add(mesh);
 
         const renderer = new THREE.WebGLRenderer({
@@ -102,6 +104,7 @@ const SkyBackground: React.FC = () => {
             powerPreference: "low-power",
         });
         renderer.setClearColor(0x000000, 0);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
         renderer.setSize(window.innerWidth, window.innerHeight);
         containerRef.current.appendChild(renderer.domElement);
@@ -117,8 +120,8 @@ const SkyBackground: React.FC = () => {
         function animate() {
             requestAnimationFrame(animate);
 
-            const position = ((Date.now() - start_time) * 0.03) % 8000;
-            camera.position.z = -position + 8000;
+            const position = ((Date.now() - start_time) * 0.03) % 4000;
+            camera.position.z = -position + 4000;
 
             renderer.render(scene, camera);
         }

@@ -1,4 +1,4 @@
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import clsx from "clsx";
 import React, { Suspense } from "react";
@@ -22,7 +22,7 @@ const RenderModel = ({ children, className }: RenderModelProps) => {
             }}
         >
             <ambientLight intensity={Math.PI / 10} />
-            <spotLight
+            {/* <spotLight
                 position={[10, 10, 10]}
                 angle={0.15}
                 penumbra={1}
@@ -33,13 +33,14 @@ const RenderModel = ({ children, className }: RenderModelProps) => {
                 position={[-10, -10, -10]}
                 decay={0}
                 intensity={Math.PI / 10}
-            />
+            /> */}
             <Suspense fallback={null}>{children}</Suspense>
             <OrbitControls
                 enablePan={true}
                 enableZoom={true}
                 enableRotate={true}
             />
+            <Stats />
         </Canvas>
     );
 };
