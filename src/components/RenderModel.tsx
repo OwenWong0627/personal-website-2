@@ -1,16 +1,56 @@
 import { OrbitControls, Stats } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
+import { Canvas, useThree } from "@react-three/fiber";
 import clsx from "clsx";
-import React, { Suspense } from "react";
+import React, { Suspense, useRef } from "react";
 
 import { ReactNode } from "react";
 
 interface RenderModelProps {
     children: ReactNode;
     className?: string;
+    isCameraLocked: boolean;
+    setIsCameraLocked: (locked: boolean) => void;
 }
 
-const RenderModel = ({ children, className }: RenderModelProps) => {
+const CameraController: React.FC<{
+    isCameraLocked: boolean;
+    controlsRef: React.RefObject<OrbitControlsImpl>;
+}> = ({ isCameraLocked, controlsRef }) => {
+    const { camera } = useThree();
+
+    return (
+        <OrbitControls
+            ref={controlsRef}
+            args={[camera]}
+            enablePan={!isCameraLocked}
+            enableZoom={!isCameraLocked}
+            enableRotate={!isCameraLocked}
+            // Rotation bounds
+            // minPolarAngle={Math.PI / 8} // Limit upward rotation
+            // maxPolarAngle={Math.PI / 2} // Limit downward rotation
+            // minAzimuthAngle={-Math.PI / 1.8} // Limit left rotation
+            // maxAzimuthAngle={Math.PI / 16} // Limit right rotation
+            // // Zoom constraints
+            // minDistance={5} // Minimum zoom distance
+            // maxDistance={20} // Maximum zoom distance
+            // Smooth dampening
+            enableDamping={true}
+            dampingFactor={0.05}
+            rotateSpeed={0.5}
+            zoomSpeed={0.5}
+        />
+    );
+};
+
+const RenderModel = ({
+    children,
+    className,
+    isCameraLocked,
+    setIsCameraLocked,
+}: RenderModelProps) => {
+    const controlsRef = useRef<OrbitControlsImpl>(null);
+
     return (
         <Canvas
             className={clsx("w-screen h-screen relative", className)}
@@ -21,24 +61,20 @@ const RenderModel = ({ children, className }: RenderModelProps) => {
                 powerPreference: "low-power",
             }}
         >
-            <ambientLight intensity={Math.PI / 10} />
-            {/* <spotLight
-                position={[10, 10, 10]}
-                angle={0.15}
-                penumbra={1}
-                decay={0}
-                intensity={Math.PI / 2}
-            />
-            <pointLight
-                position={[-10, -10, -10]}
-                decay={0}
-                intensity={Math.PI / 10}
-            /> */}
-            <Suspense fallback={null}>{children}</Suspense>
-            <OrbitControls
-                enablePan={true}
-                enableZoom={true}
-                enableRotate={true}
+            <directionalLight position={[5, 5, 5]} intensity={1.5} />
+            <directionalLight position={[-5, 5, -5]} intensity={0.5} />
+            <Suspense fallback={null}>
+                {React.Children.map(children, (child) =>
+                    React.cloneElement(child as React.ReactElement, {
+                        isCameraLocked,
+                        setIsCameraLocked,
+                        controlsRef,
+                    })
+                )}
+            </Suspense>
+            <CameraController
+                isCameraLocked={isCameraLocked}
+                controlsRef={controlsRef}
             />
             <Stats />
         </Canvas>

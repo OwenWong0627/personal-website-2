@@ -14,6 +14,7 @@
         "@types/three": "^0.170.0",
         "clsx": "^2.1.1",
         "framer-motion": "^11.11.13",
+        "gsap": "^3.12.5",
         "lottie-react": "^2.4.0",
         "next": "15.0.3",
         "react": "^18.3.1",

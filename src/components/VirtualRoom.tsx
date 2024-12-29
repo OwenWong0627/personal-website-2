@@ -4,7 +4,6 @@ import RenderModel from "@/components/RenderModel";
 import VolumeControl from "@/components/VolumeControl";
 import StarryBackground from "@/components/StarryBackground";
 import SkyBackground from "@/components/SkyBackground";
-
 import dynamic from "next/dynamic";
 import BackgroundToggle from "@/components/BackgroundToggle";
 
@@ -23,6 +22,7 @@ interface VirtualRoomProps {
 const VirtualRoom: React.FC<VirtualRoomProps> = ({ isEntered }) => {
     const [opacity, setOpacity] = useState(0);
     const [isDarkMode, setIsDarkMode] = useState(true);
+    const [isCameraLocked, setIsCameraLocked] = useState(false);
 
     useEffect(() => {
         if (isEntered) {
@@ -62,9 +62,15 @@ const VirtualRoom: React.FC<VirtualRoomProps> = ({ isEntered }) => {
                 />
                 <VolumeControl isVirtualRoomEntered={isEntered} />
                 <div className="w-screen h-screen">
-                    <RenderModel>
+                    <RenderModel
+                        isCameraLocked={isCameraLocked}
+                        setIsCameraLocked={setIsCameraLocked}
+                    >
                         <Room />
-                        <Monitor />
+                        <Monitor
+                            isCameraLocked={false}
+                            setIsCameraLocked={setIsCameraLocked}
+                        />
                     </RenderModel>
                 </div>
             </main>
