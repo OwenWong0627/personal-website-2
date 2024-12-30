@@ -3,11 +3,11 @@ import BackButton from "./BackButton";
 import { useActiveLink } from "@/contexts/ActiveLinkContext";
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 
-interface NavbarProps {
-    controlsRef: React.RefObject<OrbitControlsImpl>;
-}
+// interface NavbarProps {
+//     controlsRef: React.RefObject<OrbitControlsImpl>;
+// }
 
-const Navbar: React.FC<NavbarProps> = ({ controlsRef }) => {
+const Navbar: React.FC = () => {
     const { isNavbarRetracted } = useActiveLink();
 
     return (

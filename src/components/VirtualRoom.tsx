@@ -58,7 +58,7 @@ const VirtualRoom: React.FC<VirtualRoomProps> = ({ isEntered }) => {
                         <SkyBackground />
                     </div>
                 </div>
-                <Navbar controlsRef={controlsRef} />
+                <Navbar />
                 <div
                     className={`transition-opacity duration-300 ease-in-out ${
                         isNavbarRetracted ? "opacity-0" : "opacity-100"
