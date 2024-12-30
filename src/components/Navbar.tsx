@@ -2,7 +2,6 @@ import AnimatedLink from "./NavbarLink";
 import BackButton from "./BackButton";
 import { useActiveLink } from "@/contexts/ActiveLinkContext";
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
-import * as THREE from "three";
 
 interface NavbarProps {
     controlsRef: React.RefObject<OrbitControlsImpl>;

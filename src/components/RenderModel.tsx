@@ -2,7 +2,7 @@ import { OrbitControls, Stats } from "@react-three/drei";
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { Canvas, useThree } from "@react-three/fiber";
 import clsx from "clsx";
-import React, { Suspense, useRef } from "react";
+import React, { Suspense } from "react";
 
 import { ReactNode } from "react";
 import { useActiveLink } from "@/contexts/ActiveLinkContext";
