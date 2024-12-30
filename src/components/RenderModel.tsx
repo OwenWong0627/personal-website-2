@@ -5,12 +5,12 @@ import clsx from "clsx";
 import React, { Suspense, useRef } from "react";
 
 import { ReactNode } from "react";
+import { useActiveLink } from "@/contexts/ActiveLinkContext";
 
 interface RenderModelProps {
     children: ReactNode;
     className?: string;
-    isCameraLocked: boolean;
-    setIsCameraLocked: (locked: boolean) => void;
+    controlsRef: React.RefObject<OrbitControlsImpl>;
 }
 
 const CameraController: React.FC<{
@@ -27,11 +27,11 @@ const CameraController: React.FC<{
             enableZoom={!isCameraLocked}
             enableRotate={!isCameraLocked}
             // Rotation bounds
-            // minPolarAngle={Math.PI / 8} // Limit upward rotation
-            // maxPolarAngle={Math.PI / 2} // Limit downward rotation
-            // minAzimuthAngle={-Math.PI / 1.8} // Limit left rotation
-            // maxAzimuthAngle={Math.PI / 16} // Limit right rotation
-            // // Zoom constraints
+            minPolarAngle={Math.PI / 8} // Limit upward rotation
+            maxPolarAngle={Math.PI / 2} // Limit downward rotation
+            minAzimuthAngle={-Math.PI / 1.8} // Limit left rotation
+            maxAzimuthAngle={Math.PI / 16} // Limit right rotation
+            // Zoom constraints
             // minDistance={5} // Minimum zoom distance
             // maxDistance={20} // Maximum zoom distance
             // Smooth dampening
@@ -46,11 +46,9 @@ const CameraController: React.FC<{
 const RenderModel = ({
     children,
     className,
-    isCameraLocked,
-    setIsCameraLocked,
+    controlsRef,
 }: RenderModelProps) => {
-    const controlsRef = useRef<OrbitControlsImpl>(null);
-
+    const { isCameraLocked } = useActiveLink();
     return (
         <Canvas
             className={clsx("w-screen h-screen relative", className)}
@@ -63,15 +61,7 @@ const RenderModel = ({
         >
             <directionalLight position={[5, 5, 5]} intensity={1.5} />
             <directionalLight position={[-5, 5, -5]} intensity={0.5} />
-            <Suspense fallback={null}>
-                {React.Children.map(children, (child) =>
-                    React.cloneElement(child as React.ReactElement, {
-                        isCameraLocked,
-                        setIsCameraLocked,
-                        controlsRef,
-                    })
-                )}
-            </Suspense>
+            <Suspense fallback={null}>{children}</Suspense>
             <CameraController
                 isCameraLocked={isCameraLocked}
                 controlsRef={controlsRef}

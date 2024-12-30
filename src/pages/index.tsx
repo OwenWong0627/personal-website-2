@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Welcome from "@/components/Welcome";
 import VirtualRoom from "@/components/VirtualRoom";
+import { ActiveLinkProvider } from "@/contexts/ActiveLinkContext";
 
 const Home: React.FC = () => {
     const [showWelcome, setShowWelcome] = useState(true);
@@ -18,7 +19,11 @@ const Home: React.FC = () => {
             {showWelcome && (
                 <Welcome onEnterVirtualRoom={handleEnterVirtualRoom} />
             )}
-            {!showWelcome && <VirtualRoom isEntered={showVirtualRoom} />}
+            {!showWelcome && (
+                <ActiveLinkProvider>
+                    <VirtualRoom isEntered={showVirtualRoom} />
+                </ActiveLinkProvider>
+            )}
         </div>
     );
 };

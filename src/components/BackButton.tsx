@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useActiveLink } from "../contexts/ActiveLinkContext";
 
-const BackButton = () => {
-    const { activeHref, resetActiveHref } = useActiveLink();
+const BackButton: React.FC = () => {
+    const { activeHref, resetNavBar } = useActiveLink();
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -13,7 +13,7 @@ const BackButton = () => {
 
     return (
         <button
-            onClick={resetActiveHref}
+            onClick={resetNavBar}
             className="absolute bottom-5 left-5 bg-gradient-to-r from-pastel-pink to-pastel-blue p-2 rounded-full cursor-pointer flex items-center justify-center z-10 focus:pointer-events-auto"
             style={{ width: 100, height: 100 }}
         >

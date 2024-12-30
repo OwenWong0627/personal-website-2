@@ -4,24 +4,21 @@ import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
 import gsap from "gsap";
+import { useActiveLink } from "@/contexts/ActiveLinkContext";
 
 interface MonitorProps {
-    isCameraLocked: boolean;
-    setIsCameraLocked: (locked: boolean) => void;
-    controlsRef?: React.RefObject<OrbitControlsImpl>;
+    controlsRef: React.RefObject<OrbitControlsImpl>;
 }
 
-const Monitor: React.FC<MonitorProps> = ({
-    isCameraLocked,
-    setIsCameraLocked,
-    controlsRef,
-}) => {
+const Monitor: React.FC<MonitorProps> = ({ controlsRef }) => {
     const monitorRef = useRef<THREE.Group>(null);
     const { scene } = useGLTF("/models/monitor.glb");
     const { camera } = useThree();
     const [hovered, setHovered] = useState(false);
     const [cameraMoving, setCameraMoving] = useState(false);
     const outlineMeshes = useRef<THREE.Mesh[]>([]);
+    const { isCameraLocked, setIsCameraLocked, handleLinkClick } =
+        useActiveLink();
 
     useEffect(() => {
         outlineMeshes.current.forEach((mesh) => mesh.removeFromParent());
@@ -64,6 +61,7 @@ const Monitor: React.FC<MonitorProps> = ({
         if (monitorRef.current && !isCameraLocked) {
             setHovered(false);
             setCameraMoving(true);
+            handleLinkClick("monitor");
             const cameraPosition = new THREE.Vector3(2.2, 3.69, -0.53523);
 
             gsap.to(camera.position, {
@@ -77,7 +75,9 @@ const Monitor: React.FC<MonitorProps> = ({
                     }
                 },
                 onComplete: () => {
-                    setIsCameraLocked(true);
+                    if (setIsCameraLocked) {
+                        setIsCameraLocked(true);
+                    }
                     setCameraMoving(false);
                     if (controlsRef && controlsRef.current) {
                         controlsRef.current.target.set(3.51968, 3.69, -0.53523);

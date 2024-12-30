@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import RenderModel from "@/components/RenderModel";
 import VolumeControl from "@/components/VolumeControl";
@@ -6,6 +6,8 @@ import StarryBackground from "@/components/StarryBackground";
 import SkyBackground from "@/components/SkyBackground";
 import dynamic from "next/dynamic";
 import BackgroundToggle from "@/components/BackgroundToggle";
+import { useActiveLink } from "@/contexts/ActiveLinkContext";
+import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 
 const Room = dynamic(() => import("@/components/models/Room"), {
     ssr: false,
@@ -22,7 +24,8 @@ interface VirtualRoomProps {
 const VirtualRoom: React.FC<VirtualRoomProps> = ({ isEntered }) => {
     const [opacity, setOpacity] = useState(0);
     const [isDarkMode, setIsDarkMode] = useState(true);
-    const [isCameraLocked, setIsCameraLocked] = useState(false);
+    const { isNavbarRetracted } = useActiveLink();
+    const controlsRef = useRef<OrbitControlsImpl>(null);
 
     useEffect(() => {
         if (isEntered) {
@@ -55,22 +58,22 @@ const VirtualRoom: React.FC<VirtualRoomProps> = ({ isEntered }) => {
                         <SkyBackground />
                     </div>
                 </div>
-                <Navbar />
-                <BackgroundToggle
-                    isDarkMode={isDarkMode}
-                    onToggle={handleBackgroundChange}
-                />
+                <Navbar controlsRef={controlsRef} />
+                <div
+                    className={`transition-opacity duration-300 ease-in-out ${
+                        isNavbarRetracted ? "opacity-0" : "opacity-100"
+                    }`}
+                >
+                    <BackgroundToggle
+                        isDarkMode={isDarkMode}
+                        onToggle={handleBackgroundChange}
+                    />
+                </div>
                 <VolumeControl isVirtualRoomEntered={isEntered} />
                 <div className="w-screen h-screen">
-                    <RenderModel
-                        isCameraLocked={isCameraLocked}
-                        setIsCameraLocked={setIsCameraLocked}
-                    >
+                    <RenderModel controlsRef={controlsRef}>
                         <Room />
-                        <Monitor
-                            isCameraLocked={false}
-                            setIsCameraLocked={setIsCameraLocked}
-                        />
+                        <Monitor controlsRef={controlsRef} />
                     </RenderModel>
                 </div>
             </main>

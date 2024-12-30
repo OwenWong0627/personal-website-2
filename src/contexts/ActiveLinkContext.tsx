@@ -1,15 +1,21 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 interface ActiveLinkContextType {
     activeHref: string;
-    setActiveHref: (href: string) => void;
-    resetActiveHref: () => void;
+    resetNavBar: () => void;
+    isNavbarRetracted: boolean;
+    handleLinkClick: (href: string) => void;
+    isCameraLocked: boolean;
+    setIsCameraLocked: (locked: boolean) => void;
 }
 
 export const ActiveLinkContext = createContext<ActiveLinkContextType>({
     activeHref: "",
-    setActiveHref: () => {},
-    resetActiveHref: () => {},
+    resetNavBar: () => {},
+    isNavbarRetracted: false,
+    handleLinkClick: () => {},
+    isCameraLocked: false,
+    setIsCameraLocked: () => {},
 });
 
 export const useActiveLink = () => {
@@ -30,12 +36,31 @@ export const ActiveLinkProvider: React.FC<ActiveLinkProviderProps> = ({
     children,
 }) => {
     const [activeHref, setActiveHref] = useState<string>("");
+    const [isNavbarRetracted, setIsNavbarRetracted] = useState<boolean>(false);
+    const [isCameraLocked, setIsCameraLocked] = useState<boolean>(false);
 
-    const resetActiveHref = () => setActiveHref("");
+    const resetNavBar = () => {
+        setActiveHref("");
+        setIsNavbarRetracted(false);
+        setIsCameraLocked(false);
+    };
+
+    const handleLinkClick = (href: string) => {
+        setActiveHref(href);
+        setIsNavbarRetracted(true);
+        setIsCameraLocked(true);
+    };
 
     return (
         <ActiveLinkContext.Provider
-            value={{ activeHref, setActiveHref, resetActiveHref }}
+            value={{
+                activeHref,
+                resetNavBar,
+                isNavbarRetracted,
+                handleLinkClick,
+                isCameraLocked,
+                setIsCameraLocked,
+            }}
         >
             {children}
         </ActiveLinkContext.Provider>

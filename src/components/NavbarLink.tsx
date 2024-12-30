@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import Link from "next/link";
 import { LottieRefCurrentProps } from "lottie-react";
 import DynamicLottie from "@/components/DynamicLottie";
 import animationData from "../../public/lottie/LottieSharpieCirclePurple.json";
@@ -11,7 +10,7 @@ interface AnimatedLinkProps {
 }
 
 const AnimatedLink: React.FC<AnimatedLinkProps> = ({ href, children }) => {
-    const { activeHref, setActiveHref } = useActiveLink();
+    const { activeHref, handleLinkClick } = useActiveLink();
     const lottieRef = useRef<LottieRefCurrentProps>(null);
 
     const handleEnterFrame = () => {
@@ -70,7 +69,7 @@ const AnimatedLink: React.FC<AnimatedLinkProps> = ({ href, children }) => {
 
     const handleClick = () => {
         if (activeHref !== href) {
-            setActiveHref(href);
+            handleLinkClick(href);
         }
     };
 
@@ -81,12 +80,14 @@ const AnimatedLink: React.FC<AnimatedLinkProps> = ({ href, children }) => {
             onMouseLeave={handleMouseLeave}
             onClick={handleClick}
         >
-            <Link
-                href={href}
+            <a
                 className="text-black hover:text-gray-200 transition-colors mx-5"
+                style={{
+                    cursor: "pointer",
+                }}
             >
                 {children}
-            </Link>
+            </a>
             <DynamicLottie
                 lottieRef={lottieRef}
                 animationData={animationData}
@@ -98,10 +99,7 @@ const AnimatedLink: React.FC<AnimatedLinkProps> = ({ href, children }) => {
                     height: 100,
                     width: "100%",
                     top: -29,
-                    // TODO: Make routing move the camera to the active link
-                    // uncomment to enable actual routing
-                    // pointerEvents: href === activeHref ? "auto" : "none",
-                    cursor: href === activeHref ? "default" : "pointer",
+                    pointerEvents: href === activeHref ? "auto" : "none",
                 }}
             />
         </div>
