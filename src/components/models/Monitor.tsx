@@ -17,7 +17,7 @@ const Monitor: React.FC<MonitorProps> = ({ controlsRef }) => {
     const [hovered, setHovered] = useState(false);
     const [cameraMoving, setCameraMoving] = useState(false);
     const outlineMeshes = useRef<THREE.Mesh[]>([]);
-    const { isCameraLocked, setIsCameraLocked, handleLinkClick } =
+    const { activeHref, isCameraLocked, setIsCameraLocked, handleLinkClick } =
         useActiveLink();
 
     useEffect(() => {
@@ -57,12 +57,18 @@ const Monitor: React.FC<MonitorProps> = ({ controlsRef }) => {
         };
     }, [hovered, isCameraLocked]);
 
-    const handleClick = useCallback(() => {
-        if (monitorRef.current && !isCameraLocked) {
+    const handleMonitorClick = useCallback(() => {
+        if (
+            monitorRef.current &&
+            !isCameraLocked &&
+            (activeHref === "/monitor" ||
+                activeHref === "/about-me" ||
+                activeHref === "/experience" ||
+                activeHref === "/projects")
+        ) {
             setHovered(false);
             setCameraMoving(true);
-            handleLinkClick("monitor");
-            const cameraPosition = new THREE.Vector3(2.2, 3.69, -0.53523);
+            const cameraPosition = new THREE.Vector3(2.5, 3.69, -0.53523);
 
             gsap.to(camera.position, {
                 duration: 1,
@@ -77,15 +83,19 @@ const Monitor: React.FC<MonitorProps> = ({ controlsRef }) => {
                 onComplete: () => {
                     if (setIsCameraLocked) {
                         setIsCameraLocked(true);
+                        setCameraMoving(false);
                     }
-                    setCameraMoving(false);
                     if (controlsRef && controlsRef.current) {
                         controlsRef.current.target.set(3.51968, 3.69, -0.53523);
                     }
                 },
             });
         }
-    }, [camera, isCameraLocked, setIsCameraLocked, controlsRef]);
+    }, [camera, isCameraLocked, setIsCameraLocked, controlsRef, activeHref]);
+
+    const handleClick = () => {
+        handleLinkClick("/monitor");
+    };
 
     const handlePointerOver = useCallback(() => {
         if (!isCameraLocked && !cameraMoving) {
@@ -96,6 +106,12 @@ const Monitor: React.FC<MonitorProps> = ({ controlsRef }) => {
     const handlePointerOut = useCallback(() => {
         setHovered(false);
     }, []);
+
+    useEffect(() => {
+        if (!isCameraLocked) {
+            handleMonitorClick();
+        }
+    }, [activeHref, handleMonitorClick, isCameraLocked]);
 
     return (
         <group

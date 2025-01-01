@@ -19,7 +19,7 @@ const Navbar: React.FC = () => {
             >
                 <nav className="flex justify-around text-base-plus font-semi-bold tracking-tightest font-switzer">
                     <AnimatedLink href="/about-me">About Me</AnimatedLink>
-                    <AnimatedLink href="/education">Education</AnimatedLink>
+                    <AnimatedLink href="/experience">Experience</AnimatedLink>
                     <AnimatedLink href="/projects">Projects</AnimatedLink>
                     <AnimatedLink href="/resume">Resume</AnimatedLink>
                     <AnimatedLink href="/contact-me">Contact Me</AnimatedLink>

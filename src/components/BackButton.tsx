@@ -4,18 +4,45 @@ import { useActiveLink } from "../contexts/ActiveLinkContext";
 const BackButton: React.FC = () => {
     const { activeHref, resetNavBar } = useActiveLink();
     const [isVisible, setIsVisible] = useState(false);
+    const [opacity, setOpacity] = useState(0);
+    const [isClickable, setIsClickable] = useState(false);
 
     useEffect(() => {
-        setIsVisible(!!activeHref); // Set visible if there's an active href
+        let fadeTimeout: NodeJS.Timeout;
+        let clickableTimeout: NodeJS.Timeout;
+
+        if (activeHref) {
+            setIsVisible(true);
+            fadeTimeout = setTimeout(() => setOpacity(1), 50);
+            clickableTimeout = setTimeout(() => setIsClickable(true), 1000);
+        } else {
+            setOpacity(0);
+            setIsClickable(false);
+            fadeTimeout = setTimeout(() => setIsVisible(false), 1000);
+        }
+
+        return () => {
+            clearTimeout(fadeTimeout);
+            clearTimeout(clickableTimeout);
+        };
     }, [activeHref]);
+
+    const handleClick = () => {
+        if (isClickable) {
+            resetNavBar();
+            setIsClickable(false);
+        }
+    };
 
     if (!isVisible) return null;
 
     return (
         <button
-            onClick={resetNavBar}
-            className="absolute bottom-5 left-5 bg-gradient-to-r from-pastel-pink to-pastel-blue p-2 rounded-full cursor-pointer flex items-center justify-center z-10 focus:pointer-events-auto"
-            style={{ width: 100, height: 100 }}
+            onClick={handleClick}
+            className={`absolute bottom-5 left-5 bg-gradient-to-r from-pastel-pink to-pastel-blue p-2 rounded-full flex items-center justify-center z-10 focus:pointer-events-auto transition-opacity duration-1000 ${
+                isClickable ? "cursor-pointer" : "cursor-default"
+            }`}
+            style={{ width: 100, height: 100, opacity }}
         >
             <svg
                 viewBox="0 0 24 24"

@@ -2,7 +2,9 @@ import { OrbitControls, Stats } from "@react-three/drei";
 import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { Canvas, useThree } from "@react-three/fiber";
 import clsx from "clsx";
-import React, { Suspense } from "react";
+import React, { Suspense, useCallback, useEffect } from "react";
+import * as THREE from "three";
+import gsap from "gsap";
 
 import { ReactNode } from "react";
 import { useActiveLink } from "@/contexts/ActiveLinkContext";
@@ -17,7 +19,37 @@ const CameraController: React.FC<{
     isCameraLocked: boolean;
     controlsRef: React.RefObject<OrbitControlsImpl>;
 }> = ({ isCameraLocked, controlsRef }) => {
+    const { activeHref } = useActiveLink();
     const { camera } = useThree();
+
+    const resetCamera = useCallback(() => {
+        const originalPosition = new THREE.Vector3(-10, 10, 15);
+        const originalTarget = new THREE.Vector3(0, 0, 0);
+
+        gsap.to(camera.position, {
+            duration: 1,
+            x: originalPosition.x,
+            y: originalPosition.y,
+            z: originalPosition.z,
+            onUpdate: () => {
+                if (controlsRef.current) {
+                    controlsRef.current.target.lerp(originalTarget, 0.1);
+                }
+            },
+            onComplete: () => {
+                if (controlsRef.current) {
+                    controlsRef.current.target.copy(originalTarget);
+                }
+            },
+        });
+    }, [camera, controlsRef]);
+
+    useEffect(() => {
+        if (activeHref === "" && !isCameraLocked && controlsRef.current) {
+            console.log("Resetting camera");
+            resetCamera();
+        }
+    }, [activeHref, controlsRef, isCameraLocked, resetCamera]);
 
     return (
         <OrbitControls
@@ -49,6 +81,7 @@ const RenderModel = ({
     controlsRef,
 }: RenderModelProps) => {
     const { isCameraLocked } = useActiveLink();
+
     return (
         <Canvas
             className={clsx("w-screen h-screen relative", className)}
