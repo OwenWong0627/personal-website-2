@@ -43,6 +43,12 @@ export const ActiveLinkProvider: React.FC<ActiveLinkProviderProps> = ({
         setActiveHref("");
         setIsNavbarRetracted(false);
         setIsCameraLocked(false);
+
+        const iframe = document.querySelector("iframe");
+        if (iframe && iframe.contentWindow) {
+            const action = "reset";
+            iframe.contentWindow.postMessage(JSON.stringify({ action }), "*");
+        }
     };
 
     const handleLinkClick = (href: string) => {
