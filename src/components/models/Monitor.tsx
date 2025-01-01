@@ -135,12 +135,7 @@ const Monitor: React.FC<MonitorProps> = ({ controlsRef }) => {
     }, [activeHref, handleMonitorClick, isCameraLocked]);
 
     return (
-        <group
-            ref={monitorRef}
-            position={[0, 0, 0]}
-            scale={[1, 1, 1]}
-            onClick={handleClick}
-        >
+        <group ref={monitorRef} position={[0, 0, 0]} scale={[1, 1, 1]}>
             <primitive object={scene} />
             <Html
                 position={[3.53, 3.71, -0.53523]}
