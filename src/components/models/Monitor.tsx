@@ -151,6 +151,7 @@ const Monitor: React.FC<MonitorProps> = ({ controlsRef }) => {
                     <iframe
                         src="https://owen-macos.vercel.app/"
                         className="w-monitor-width	h-monitor-height"
+                        id="owen-macos-monitor"
                     />
                 </div>
             </Html>

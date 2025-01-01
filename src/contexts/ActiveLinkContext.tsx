@@ -44,10 +44,15 @@ export const ActiveLinkProvider: React.FC<ActiveLinkProviderProps> = ({
         setIsNavbarRetracted(false);
         setIsCameraLocked(false);
 
-        const iframe = document.querySelector("iframe");
-        if (iframe && iframe.contentWindow) {
+        const monitorIframe = document.getElementById(
+            "owen-macos-monitor"
+        ) as HTMLIFrameElement;
+        if (monitorIframe && monitorIframe.contentWindow) {
             const action = "reset";
-            iframe.contentWindow.postMessage(JSON.stringify({ action }), "*");
+            monitorIframe.contentWindow.postMessage(
+                JSON.stringify({ action }),
+                "*"
+            );
         }
     };
 
@@ -55,10 +60,15 @@ export const ActiveLinkProvider: React.FC<ActiveLinkProviderProps> = ({
         setActiveHref(href);
         setIsNavbarRetracted(true);
 
-        const iframe = document.querySelector("iframe");
-        if (iframe && iframe.contentWindow) {
+        const monitorIframe = document.getElementById(
+            "owen-macos-monitor"
+        ) as HTMLIFrameElement;
+        if (monitorIframe && monitorIframe.contentWindow) {
             const action = href.replace("/", "");
-            iframe.contentWindow.postMessage(JSON.stringify({ action }), "*");
+            monitorIframe.contentWindow.postMessage(
+                JSON.stringify({ action }),
+                "*"
+            );
         }
     };
 
