@@ -25,6 +25,10 @@ const CameraController: React.FC<{
     const resetCamera = useCallback(() => {
         const originalPosition = new THREE.Vector3(-10, 10, 15);
         const originalTarget = new THREE.Vector3(0, 0, 0);
+        const initialCameraPosition = camera.position.clone();
+        const initialTargetPosition = controlsRef.current
+            ? controlsRef.current.target.clone()
+            : new THREE.Vector3();
 
         gsap.to(camera.position, {
             duration: 1,
@@ -33,7 +37,15 @@ const CameraController: React.FC<{
             z: originalPosition.z,
             onUpdate: () => {
                 if (controlsRef.current) {
-                    controlsRef.current.target.lerp(originalTarget, 0.1);
+                    const progress =
+                        camera.position.distanceTo(initialCameraPosition) /
+                        originalPosition.distanceTo(initialCameraPosition);
+                    const currentTarget = new THREE.Vector3().lerpVectors(
+                        initialTargetPosition,
+                        originalTarget,
+                        progress
+                    );
+                    controlsRef.current.target.copy(currentTarget);
                 }
             },
             onComplete: () => {

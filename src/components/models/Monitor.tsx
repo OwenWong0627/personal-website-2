@@ -69,6 +69,13 @@ const Monitor: React.FC<MonitorProps> = ({ controlsRef }) => {
             setHovered(false);
             setCameraMoving(true);
             const cameraPosition = new THREE.Vector3(2.5, 3.69, -0.53523);
+            const targetPosition = new THREE.Vector3(3.51968, 3.69, -0.53523);
+            const startPosition = new THREE.Vector3(0, 0, 0);
+            const initialCameraPosition = camera.position.clone();
+            console.log(
+                "Moving camera to monitor",
+                controlsRef.current?.target
+            );
 
             gsap.to(camera.position, {
                 duration: 1,
@@ -77,7 +84,21 @@ const Monitor: React.FC<MonitorProps> = ({ controlsRef }) => {
                 z: cameraPosition.z,
                 onUpdate: () => {
                     if (controlsRef && controlsRef.current) {
-                        controlsRef.current.target.set(3.51968, 3.69, -0.53523);
+                        console.log(
+                            "Moving camera to monitor",
+                            controlsRef.current?.target
+                        );
+                        const progress =
+                            camera.position.distanceTo(initialCameraPosition) /
+                            cameraPosition.distanceTo(initialCameraPosition);
+                        console.log("Progress", progress);
+                        const currentTarget = new THREE.Vector3().lerpVectors(
+                            startPosition,
+                            targetPosition,
+                            progress
+                        );
+                        console.log("Current target", currentTarget);
+                        controlsRef.current.target.copy(currentTarget);
                     }
                 },
                 onComplete: () => {
@@ -86,7 +107,7 @@ const Monitor: React.FC<MonitorProps> = ({ controlsRef }) => {
                         setCameraMoving(false);
                     }
                     if (controlsRef && controlsRef.current) {
-                        controlsRef.current.target.set(3.51968, 3.69, -0.53523);
+                        controlsRef.current.target.copy(targetPosition);
                     }
                 },
             });
