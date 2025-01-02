@@ -140,12 +140,13 @@ const Monitor: React.FC<MonitorProps> = ({ controlsRef }) => {
             <Html
                 position={[3.53, 3.71, -0.53523]}
                 transform
-                distanceFactor={0.5}
+                distanceFactor={0.61}
                 rotation-y={-Math.PI / 2}
                 style={{
                     width: "100%",
                     height: "100%",
                     pointerEvents: isCameraLocked ? "auto" : "none",
+                    visibility: "visible",
                 }}
             >
                 <div className="w-full h-full relative">
